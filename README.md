@@ -16,6 +16,16 @@ Inlet is a production-ready B2B SaaS platform that automates customer support us
 
 ---
 
+## Screenshots
+
+**Inbox — AI-Powered Email Triage**
+![Inbox Page](docs/inbox.png)
+
+**Console — Knowledge Management & AI Training**
+![Console Page](docs/console.png)
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
