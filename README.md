@@ -196,7 +196,7 @@ Spring Boot will automatically create all other required tables on first startup
 
 ```bash
 cd core
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
 
 On first run, a browser window will open asking you to authorize Gmail access for your Google account. After you approve, a `tokens/` folder will be created locally to cache your session for future runs.
