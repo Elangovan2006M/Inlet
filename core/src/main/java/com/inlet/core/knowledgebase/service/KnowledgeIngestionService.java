@@ -94,23 +94,26 @@ public class KnowledgeIngestionService {
     }
 
     public void ingestText(String text, String uid, String identifier) {
-        jdbcTemplate.update("DELETE FROM vector_store WHERE metadata->>'file_name' = ?", identifier);
+        String safeIdentifier = (identifier != null && !identifier.isBlank()) ? identifier : "manual-rule";
+        String safeUid = (uid != null && !uid.isBlank()) ? uid : "system";
+
+        jdbcTemplate.update("DELETE FROM vector_store WHERE metadata->>'file_name' = ?", safeIdentifier);
 
         Document doc = new Document(text);
-        doc.getMetadata().put("file_name", identifier);
-        doc.getMetadata().put("updated_by", uid); 
-        
+        doc.getMetadata().put("file_name", safeIdentifier);
+        doc.getMetadata().put("updated_by", safeUid);
+
         vectorStore.add(List.of(doc));
 
-        KnowledgeDocument dbDoc = repository.findByUid(uid).stream()
-                .filter(d -> d.getName().equals(identifier))
+        KnowledgeDocument dbDoc = repository.findByUid(safeUid).stream()
+                .filter(d -> d.getName().equals(safeIdentifier))
                 .findFirst()
                 .orElse(new KnowledgeDocument());
 
-        dbDoc.setName(identifier);
+        dbDoc.setName(safeIdentifier);
         dbDoc.setType("TEXT");
         dbDoc.setContent(text);
-        dbDoc.setUid(uid); 
+        dbDoc.setUid(safeUid);
         repository.save(dbDoc);
     }
 
