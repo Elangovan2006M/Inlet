@@ -12,18 +12,15 @@ public class KnowledgeDocument {
     private Long id;
 
     private String name;
-    private String type; // "PDF" or "TEXT"
+    private String type;
     private String url;
     
-    // NEW: Associate every document with a specific User ID
     private String uid;
 
     @Column(columnDefinition = "TEXT")
     private String content;
 
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    // --- GETTERS & SETTERS ---
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -37,7 +34,6 @@ public class KnowledgeDocument {
     public String getUrl() { return url; }
     public void setUrl(String url) { this.url = url; }
 
-    // NEW Getter/Setter for UID
     public String getUid() { return uid; }
     public void setUid(String uid) { this.uid = uid; }
 

@@ -52,7 +52,6 @@ public class GmailListenerService {
                 .setApplicationName(APPLICATION_NAME).build();
     }
 
-    // --- STEP 1: THE FAST SCANNER (For the Inbox List) ---
     public List<ExtractedTicketDTO> fetchUnreadCustomerEmails() {
         List<ExtractedTicketDTO> extractedEmails = new ArrayList<>();
 
@@ -63,7 +62,6 @@ public class GmailListenerService {
             if (messages == null || messages.isEmpty()) return extractedEmails;
 
             for (Message msgReference : messages) {
-                // LAZY LOADING FIX: We only ask for "metadata" (Headers) instead of "full" (Body/Files)
                 Message metadataMsg = gmailClient.users().messages().get("me", msgReference.getId())
                         .setFormat("metadata")
                         .setMetadataHeaders(Arrays.asList("From", "Subject", "Date"))
@@ -78,14 +76,13 @@ public class GmailListenerService {
                     if (header.getName().equalsIgnoreCase("From")) {
                         String headerValue = header.getValue();
                         
-                        // EMAIL EXTRACTION FIX: Properly separate the Name and the Email Address
                         senderName = headerValue.replaceAll("<.*>", "").replace("\"", "").trim();
                         if (headerValue.contains("<") && headerValue.contains(">")) {
                             senderEmail = headerValue.substring(headerValue.indexOf("<") + 1, headerValue.indexOf(">")).trim();
                         } else {
                             senderEmail = headerValue.trim();
                         }
-                        if (senderName.isEmpty()) senderName = senderEmail; // Fallback
+                        if (senderName.isEmpty()) senderName = senderEmail;
 
                     } else if (header.getName().equalsIgnoreCase("Subject")) {
                         subject = header.getValue();
@@ -100,13 +97,13 @@ public class GmailListenerService {
                 extractedEmails.add(new ExtractedTicketDTO(
                     msgReference.getId(),
                     senderName,
-                    senderEmail, // Passed to DTO
+                    senderEmail,
                     subject,
                     receivedTime,
                     isUnread,
                     previewSnippet,
-                    null, // Body is null initially! (Lazy Loading)
-                    new ArrayList<>() // Attachments are empty initially! (Lazy Loading)
+                    null,
+                    new ArrayList<>()
                 ));
             }
 
@@ -117,10 +114,8 @@ public class GmailListenerService {
         return extractedEmails;
     }
 
-    // --- STEP 2: THE DEEP FETCHER (For clicking a specific email) ---
     public ExtractedTicketDTO fetchEmailDetails(String messageId) {
         try {
-            // Here we use "full" format to actually download the data and files
             Message fullMessage = gmailClient.users().messages().get("me", messageId)
                     .setFormat("full").execute();
 
@@ -132,9 +127,7 @@ public class GmailListenerService {
             if (decodedBody.isEmpty()) {
                 decodedBody = "No plain text content found.";
             }
-
-            // Return a partial DTO just containing the heavy data. 
-            // The frontend will merge this with the data it already has.
+          
             return new ExtractedTicketDTO(
                     messageId, "", "", "", "", false, "", 
                     decodedBody, attachments
@@ -195,13 +188,11 @@ public class GmailListenerService {
 
             String cleanSubject = subject.toLowerCase().startsWith("re:") ? subject : "Re: " + subject;
             
-            // --- THE FIX: Convert AI's Markdown to beautiful HTML ---
             String htmlBody = bodyText
                     .replace("\n", "<br>") // Convert line breaks to HTML breaks
                     .replaceAll("\\*\\*(.*?)\\*\\*", "<strong>$1</strong>") // Convert **bold** to <strong>
                     .replaceAll("\\*(.*?)\\*", "<em>$1</em>"); // Convert *italics* to <em>
             
-            // --- THE FIX: Added Content-Type: text/html to the headers ---
             String rawEmailStr = "To: " + toEmail + "\r\n" +
                                  "Subject: " + cleanSubject + "\r\n" +
                                  "In-Reply-To: " + messageIdHeader + "\r\n" +
