@@ -9,10 +9,9 @@ Inlet is a production-ready B2B SaaS platform that automates customer support us
 - **Live Inbox Sync** — Connects to Gmail via the Google API and polls for new customer emails every 15 seconds, displaying them in a real-time inbox view.
 - **AI Reply Drafting** — For any selected email, the AI queries your private knowledge base and drafts a professional, empathetic reply grounded in your company's policies. It never makes up answers it wasn't trained on.
 - **Email Composer** — A built-in Write/Preview editor with Markdown support lets you review, edit, and send AI-drafted replies directly from the platform.
-- **Knowledge Management Console** — A chat interface where you can upload PDF documents (e.g., refund policies, product manuals) to train the AI's memory using a PGVector-backed RAG system.
+- **Knowledge Management Console** — A chat interface where you can upload PDF documents (e.g., refund policies, product manuals) to train the AI's memory using a PGVector-backed RAG system. Deleting a document removes both its file record and all its associated vectors from the PGVector database — the AI will immediately forget that knowledge and will no longer reference it in any future replies.
 - **Manual Rule Override** — Chat with the AI directly to add, update, or remove specific support rules in real-time. The AI uses a function-calling tool to persist changes to the database instantly.
 - **Secure Authentication** — User login powered by Supabase Auth (JWT-based). All routes are protected by server-verified sessions; bypassing authentication via browser manipulation is not possible.
-- **Global Toast Notifications** — Non-blocking, polished toast notifications replace all native browser alerts.
 
 ---
 
@@ -238,5 +237,6 @@ The frontend will be running at: `http://localhost:5173`
 5. Review the draft in the **Preview** tab, edit if needed, and click **Send**.
 6. Navigate to the **Console** page to:
    - Upload PDF documents to train the AI's knowledge base.
-   - Chat with the AI to add or update support rules.
-   - Delete specific documents or wipe the entire knowledge base.
+   - Chat with the AI to add or update specific support rules.
+   - **Delete a specific document** — this removes the file record AND permanently wipes all associated vector embeddings from PGVector. The AI will immediately lose memory of that document and will no longer reference it in replies.
+   - **Wipe entire knowledge base** — clears all documents and all vectors at once, giving the AI a completely clean slate.
