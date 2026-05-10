@@ -189,9 +189,9 @@ public class GmailListenerService {
             String cleanSubject = subject.toLowerCase().startsWith("re:") ? subject : "Re: " + subject;
             
             String htmlBody = bodyText
-                    .replace("\n", "<br>") // Convert line breaks to HTML breaks
-                    .replaceAll("\\*\\*(.*?)\\*\\*", "<strong>$1</strong>") // Convert **bold** to <strong>
-                    .replaceAll("\\*(.*?)\\*", "<em>$1</em>"); // Convert *italics* to <em>
+                    .replace("\n", "<br>") 
+                    .replaceAll("\\*\\*(.*?)\\*\\*", "<strong>$1</strong>") 
+                    .replaceAll("\\*(.*?)\\*", "<em>$1</em>"); 
             
             String rawEmailStr = "To: " + toEmail + "\r\n" +
                                  "Subject: " + cleanSubject + "\r\n" +

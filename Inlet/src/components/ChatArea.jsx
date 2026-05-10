@@ -14,7 +14,6 @@ export default function ChatArea({
 
   return (
     <section className="flex-1 w-full h-full bg-[#0a0a0a] flex flex-col relative min-h-0 overflow-hidden">
-      {/* HEADER */}
       <div className="px-8 py-6 flex justify-between items-center shrink-0 bg-[#0a0a0a]">
         <div>
           <h1 className="text-3xl font-black tracking-tight text-white">
@@ -33,7 +32,6 @@ export default function ChatArea({
         </button>
       </div>
 
-      {/* CHAT MESSAGES */}
       <div ref={chatScrollRef} className="custom-scrollbar flex-1 p-8 flex flex-col gap-6 overflow-y-auto bg-[#0a0a0a]/50">
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -74,7 +72,6 @@ export default function ChatArea({
         )}
       </div>
 
-      {/* INPUT AREA */}
       <div className="p-6 bg-[#0a0a0a] shrink-0">
         {attachedFile && (
           <div className="mb-4 inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-xl bg-[#1a1a1a] border border-white/5 text-slate-300">
