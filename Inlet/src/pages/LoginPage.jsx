@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiLock, FiMail, FiZap } from 'react-icons/fi';
+import { FiLock, FiMail, FiZap, FiEye, FiEyeOff } from 'react-icons/fi';
 import { supabase } from '../config/supabaseClient';
 
 export default function LoginPage() {
@@ -8,6 +8,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -115,22 +116,21 @@ export default function LoginPage() {
               <div className="relative">
                 <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 bg-[#121212] border border-white/10 rounded-xl text-white placeholder:text-slate-600 focus:outline-none focus:border-white/30 focus:ring-4 focus:ring-white/5 transition-all font-medium"
+                  className="w-full pl-12 pr-12 py-3.5 bg-[#121212] border border-white/10 rounded-xl text-white placeholder:text-slate-600 focus:outline-none focus:border-white/30 focus:ring-4 focus:ring-white/5 transition-all font-medium"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(prev => !prev)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                >
+                  {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                </button>
               </div>
-            </div>
-
-            <div className="flex items-center justify-between text-sm mt-2">
-              <label className="flex items-center gap-2 cursor-pointer group">
-                <input type="checkbox" className="w-4 h-4 rounded border-white/10 bg-[#121212] text-white focus:ring-white/20 focus:ring-offset-[#0a0a0a]" />
-                <span className="text-slate-400 font-medium group-hover:text-slate-300 transition-colors">Remember me</span>
-              </label>
-              <a href="#" className="font-semibold text-slate-400 hover:text-white transition-colors">Forgot password?</a>
             </div>
 
             <button
@@ -139,10 +139,6 @@ export default function LoginPage() {
             >
               {loading ? 'Authenticating...' : 'Sign In'}
             </button>
-
-            <p className="text-center text-sm text-slate-500 font-medium mt-6">
-              Don't have an account? <a href="#" className="text-white hover:underline font-semibold">Contact sales</a>
-            </p>
           </form>
 
         </div>
