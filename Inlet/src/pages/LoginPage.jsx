@@ -16,7 +16,6 @@ export default function LoginPage() {
     setError('');
 
     try {
-      // ACTUAL SUPABASE AUTH CALL
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password: password,
@@ -42,15 +41,11 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen w-full flex bg-[#0a0a0a] text-slate-200 overflow-hidden font-sans">
 
-      {/* LEFT SIDE - BRANDING */}
       <div className="hidden lg:flex w-1/2 relative bg-[#050505] flex-col justify-center items-center overflow-hidden border-r border-white/5">
-        {/* Subtle Background Effects */}
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-        {/* Abstract Creative Text Effect */}
         <div className="relative z-10 flex flex-col items-center">
-          {/* Layered Text for 3D/Glowing Effect */}
           <div className="relative">
             <h1
               className="text-[12rem] font-black leading-none tracking-tighter"
@@ -82,7 +77,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* RIGHT SIDE - LOGIN FORM */}
       <div className="w-full lg:w-1/2 flex items-center justify-center relative">
         <div className="w-full max-w-md p-8 sm:p-12">
 

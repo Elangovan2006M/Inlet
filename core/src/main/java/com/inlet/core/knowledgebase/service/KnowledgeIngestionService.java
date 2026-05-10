@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @Service
 public class KnowledgeIngestionService {
 
-    // Safely holds the UID for the current request thread
     public static final ThreadLocal<String> CURRENT_UID = new ThreadLocal<>();
 
     private final VectorStore vectorStore;
@@ -84,7 +83,6 @@ public class KnowledgeIngestionService {
             List<Document> chunks = textSplitter.apply(pdfReader.get());
             for (Document chunk : chunks) {
                 chunk.getMetadata().put("file_name", fileName);
-                // Assign the uploader's UID so the AI knows who added this PDF to Central Memory
                 chunk.getMetadata().put("updated_by", uid); 
             }
             
@@ -142,7 +140,6 @@ public class KnowledgeIngestionService {
     }
 
     public String chatWithDeveloper(String message, String uid) {
-        // 1. Save the UID to the thread so the Tool can access it behind the scenes
         CURRENT_UID.set(uid);
         
         try {
@@ -153,7 +150,6 @@ public class KnowledgeIngestionService {
             String context = docs.stream()
                     .map(d -> {
                         String lastUpdater = (String) d.getMetadata().getOrDefault("updated_by", "System/Original PDF");
-                        // FORMAT CLEARLY AS KEY-VALUE PAIRS TO PREVENT AI CONFUSION
                         return "--- DOCUMENT ---\n" +
                                "Rule Text: " + d.getContent() + "\n" +
                                "Metadata_LastUpdater: " + lastUpdater + "\n" +
@@ -161,7 +157,6 @@ public class KnowledgeIngestionService {
                     })
                     .collect(Collectors.joining("\n\n"));
 
-            // 2. We just return the AI's response directly now. No string intercepting!
             return chatClient.prompt()
                     .system(s -> s.text("""
                         You are a Central Knowledge Manager. Answer based on the global context provided.
@@ -178,7 +173,6 @@ public class KnowledgeIngestionService {
                     .content();
                     
         } finally {
-            // 3. Always clean up the thread to prevent memory leaks
             CURRENT_UID.remove();
         }
     }

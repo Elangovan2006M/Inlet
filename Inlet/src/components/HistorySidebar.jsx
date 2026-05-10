@@ -14,7 +14,6 @@ export default function HistorySidebar({
       .replace(/CRITICAL OVERRIDE:/g, '')
       .trim();
     
-    // Filter out backend metadata UUIDs
     cleaned = cleaned.split('\n')
       .filter(line => !line.includes('Metadata_LastUpdater') && !line.match(/^[0-9a-fA-F\-]{36}$/))
       .join('\n');
@@ -24,7 +23,6 @@ export default function HistorySidebar({
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
-    // If it looks like just a time (e.g. 01:38 pm) without a year or month, append 'Today, '
     if (dateStr.toLowerCase().includes('pm') || dateStr.toLowerCase().includes('am')) {
        if (!dateStr.includes('202') && !dateStr.includes('/')) {
          return `Today, ${dateStr}`;
